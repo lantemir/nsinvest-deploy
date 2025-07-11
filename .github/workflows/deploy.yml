@@ -15,28 +15,26 @@ jobs:
 
       - name: Восстанавливаем .env.prod из секретов
         run: |
-          cat <<EOF > .env.prod
-POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-DATABASE_NAME=${{ secrets.DATABASE_NAME }}
-DATABASE_USER=${{ secrets.DATABASE_USER }}
-DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}
-DATABASE_HOST=${{ secrets.DATABASE_HOST }}
-DATABASE_PORT=${{ secrets.DATABASE_PORT }}
-SECRET_KEY=${{ secrets.SECRET_KEY }}
-DEBUG=${{ secrets.DEBUG }}
-ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}
-REDIS_URL=${{ secrets.REDIS_URL }}
-CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}
-EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}
-EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}
-NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
-FRONTEND_URL=${{ secrets.FRONTEND_URL }}
-DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}
-DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}
-DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}
-EOF
+          echo "POSTGRES_DB=${{ secrets.POSTGRES_DB }}" >> .env.prod
+          echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> .env.prod
+          echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env.prod
+          echo "DATABASE_NAME=${{ secrets.DATABASE_NAME }}" >> .env.prod
+          echo "DATABASE_USER=${{ secrets.DATABASE_USER }}" >> .env.prod
+          echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env.prod
+          echo "DATABASE_HOST=${{ secrets.DATABASE_HOST }}" >> .env.prod
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env.prod
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env.prod
+          echo "DEBUG=${{ secrets.DEBUG }}" >> .env.prod
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }}" >> .env.prod
+          echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env.prod
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env.prod
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env.prod
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env.prod
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}" >> .env.prod
+          echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env.prod
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.prod
+          echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.prod
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.prod
 
       - name: Деплой на сервер
         uses: appleboy/ssh-action@v1.0.0
