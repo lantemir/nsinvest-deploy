@@ -47,5 +47,4 @@ EOF
           script: |
             cd nsinvest-deploy
             git pull origin main
-            echo "${{ secrets.DOTENV_PROD }}" > .env.prod
             docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
