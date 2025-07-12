@@ -65,4 +65,10 @@ jobs:
           script: |
             cd nsinvest-deploy
             git pull origin main
+
+            # Удаляем директорию .env.prod, если вдруг git её вернул
+            if [ -d .env.prod ]; then
+              rm -rf .env.prod
+            fi
+
             docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
