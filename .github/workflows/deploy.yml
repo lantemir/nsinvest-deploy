@@ -36,6 +36,17 @@ jobs:
           echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.prod
           echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.prod
 
+      - name: Удаляем старую .env.prod, если это директория
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            if [ -d nsinvest-deploy/.env.prod ]; then
+              rm -rf nsinvest-deploy/.env.prod
+            fi
+
       - name: Копируем .env.prod на сервер
         uses: appleboy/scp-action@v0.1.4
         with:
