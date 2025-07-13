@@ -98,6 +98,7 @@ services:
     depends_on:
       - frontend
       - backend
+    restart: always
 
 volumes:
   postgres_data:
