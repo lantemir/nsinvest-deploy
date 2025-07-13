@@ -45,7 +45,7 @@ jobs:
           script: |
             cd nsinvest-deploy
             git pull origin main
-            if [ -d .env.prod ]; then
+            if [ -d .env.prod ] || [ -f .env.prod ]; then
               rm -rf .env.prod
             fi
 
