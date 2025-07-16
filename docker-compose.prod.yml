@@ -89,11 +89,13 @@ services:
     container_name: nginx
     ports:
       - "80:80"
+      - "443:443"
     volumes:
       - ./nginx/prod.conf:/etc/nginx/conf.d/default.conf:ro
       - static_volume:/app/staticfiles
       - media_volume:/app/media
       - /var/www/certbot:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt
       # - ../django/nsinvest_backend/staticfiles:/app/staticfiles
       # - ../django/nsinvest_backend/media:/app/media
     depends_on:
