@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  repository_dispatch:
+    types: [deploy_triggered_from_frontend, deploy_triggered_from_backend]
 
 jobs:
   deploy:
