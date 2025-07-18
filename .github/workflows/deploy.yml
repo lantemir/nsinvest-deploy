@@ -37,7 +37,7 @@ jobs:
           echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.prod
           echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.prod
           echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.prod
-          echo "CSRF_TRUSTED_ORIGINS"={{ secrets.CSRF_TRUSTED_ORIGINS }} >> .env.prod
+          echo "CSRF_TRUSTED_ORIGINS=${{ secrets.CSRF_TRUSTED_ORIGINS }}" >> .env.prod
 
       - name: Обновляем код и удаляем старую .env.prod (если это папка)
         uses: appleboy/ssh-action@v1.0.0
