@@ -1,0 +1,84 @@
+name: Deploy to dev
+
+on:
+  push:
+    branches:
+      - dev
+  repository_dispatch:
+    types: [deploy_triggered_from_frontend, deploy_triggered_from_backend]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Клонируем репозиторий
+        uses: actions/checkout@v3
+
+      - name: Восстанавливаем .env.dev из секретов
+        run: |
+          echo "POSTGRES_DB=${{ secrets.DEV_POSTGRES_DB }}" >> .env.dev
+          echo "POSTGRES_USER=${{ secrets.DEV_POSTGRES_USER }}" >> .env.dev
+          echo "POSTGRES_PASSWORD=${{ secrets.DEV_POSTGRES_PASSWORD }}" >> .env.dev
+          echo "DATABASE_NAME=${{ secrets.DEV_DATABASE_NAME }}" >> .env.dev
+          echo "DATABASE_USER=${{ secrets.DEV_DATABASE_USER }}" >> .env.dev
+          echo "DATABASE_PASSWORD=${{ secrets.DEV_DATABASE_PASSWORD }}" >> .env.dev
+          echo "DATABASE_HOST=${{ secrets.DEV_DATABASE_HOST }}" >> .env.dev
+          echo "DATABASE_PORT=${{ secrets.DATABASE_PORT }}" >> .env.dev
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env.dev
+          echo "DEBUG=${{ secrets.DEV_DEBUG }}" >> .env.dev
+          echo "ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS_DEV }}" >> .env.dev
+          echo "REDIS_URL=${{ secrets.REDIS_URL }}" >> .env.dev
+          echo "CELERY_BROKER_URL=${{ secrets.CELERY_BROKER_URL }}" >> .env.dev
+          echo "EMAIL_HOST_USER=${{ secrets.EMAIL_HOST_USER }}" >> .env.dev
+          echo "EMAIL_HOST_PASSWORD=${{ secrets.EMAIL_HOST_PASSWORD }}" >> .env.dev
+          echo "NEXT_PUBLIC_API_URL=${{ secrets.DEV_NEXT_PUBLIC_API_URL }}" >> .env.dev
+          echo "FRONTEND_URL=${{ secrets.DEV_FRONTEND_URL }}" >> .env.dev
+          echo "DJANGO_SUPERUSER_USERNAME=${{ secrets.DJANGO_SUPERUSER_USERNAME }}" >> .env.dev
+          echo "DJANGO_SUPERUSER_EMAIL=${{ secrets.DJANGO_SUPERUSER_EMAIL }}" >> .env.dev
+          echo "DJANGO_SUPERUSER_PASSWORD=${{ secrets.DJANGO_SUPERUSER_PASSWORD }}" >> .env.dev
+          echo "CSRF_TRUSTED_ORIGINS=${{ secrets.DEV_CSRF_TRUSTED_ORIGINS  }}" >> .env.dev
+
+      - name: Обновляем код и удаляем старую .env.dev (если это папка)
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd nsinvest-deploy
+            git pull origin dev
+            if [ -d .env.dev ] || [ -f .env.dev ]; then
+              rm -rf .env.dev
+            fi
+
+      - name: Копируем .env.dev на сервер
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: ".env.dev"
+          target: "nsinvest-deploy/"
+
+      - name: Деплой на сервер
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd nsinvest-deploy
+            docker compose -f docker-compose.dev.yml --env-file .env.dev up -d --build
+
+      - name: Перезапускаем nginx
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.DEV_SERVER_HOST }}
+          username: ${{ secrets.DEV_SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd nsinvest-deploy
+            docker compose -f docker-compose.dev.yml restart nginx
+
+            
