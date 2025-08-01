@@ -106,6 +106,13 @@ services:
       - frontend
       - backend
     restart: always
+  
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - /var/www/certbot:/var/www/certbot
+      - /etc/letsencrypt:/etc/letsencrypt
 
 volumes:
   postgres_data:
