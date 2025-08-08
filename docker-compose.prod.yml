@@ -17,6 +17,7 @@ services:
     # ports:
     #   - "127.0.0.1:5432:5432"  # проброс только на localhost сервера 
 
+
   redis:
     image: redis:7
     container_name: redis
